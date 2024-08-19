@@ -9,7 +9,7 @@ import { useAddCabins } from "./useAddCabins";
 import { useEditCabins } from "./useEditCabins";
 import { CgLayoutGrid } from "react-icons/cg";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { isAdding, addCabin } = useAddCabins();
   const { isEditing, editCabin } = useEditCabins();
 
@@ -34,14 +34,19 @@ function CreateCabinForm({ cabinToEdit = {} }) {
       return editCabin(
         { newCabinData: { ...data, image }, id: editId },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
 
     return addCabin(
       { ...data, image: image },
       {
-        onSuccess: () => reset(),
+        onSuccess: () => {
+          reset(), onCloseModal?.();
+        },
       }
     );
     // console.log(data);
@@ -52,7 +57,10 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -138,7 +146,11 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useAddCabins } from "./useAddCabins";
+import Modal from "../../ui/Modal";
 
 const TableRow = styled.div`
   display: grid;

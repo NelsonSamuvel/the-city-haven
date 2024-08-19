@@ -5,10 +5,10 @@ import { getCabins } from "../services/apiCabins";
 import CabinTable from "../features/cabins/CabinTable";
 import CreateCabinForm from "../features/cabins/CreateCabinForm";
 import Button from "../ui/Button";
+import AddCabins from "../features/cabins/AddCabins";
 
 function Cabins() {
 
-  const [isShow,setIsShow] = useState(false);
 
   return (
     <>
@@ -18,8 +18,7 @@ function Cabins() {
       </Row>
       <Row>
         <CabinTable />
-        <Button onClick={()=>setIsShow(show => !show)}>Add new cabin</Button>
-        {isShow && <CreateCabinForm />}
+        <AddCabins />
       </Row>
     </>
   );

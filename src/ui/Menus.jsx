@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
-import  {useClickEvent as useOutsideClick}  from "../hooks/useOutsideClick";
+import { useClickEvent as useOutsideClick } from "../hooks/useOutsideClick";
 
 const Menu = styled.div`
   display: flex;
@@ -69,7 +69,7 @@ const MenusContext = createContext();
 
 function Menus({ children }) {
   const [openId, setOpenId] = useState("");
-  const [position, setPosition] = useState(null); 
+  const [position, setPosition] = useState(null);
 
   const close = () => setOpenId("");
   const open = setOpenId;
@@ -90,7 +90,7 @@ function Toggle({ id }) {
     const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.x - 20,
-      y: rect.y  + 8,
+      y: rect.y + 8,
     });
 
     openId === "" || openId !== id ? open(id) : close();

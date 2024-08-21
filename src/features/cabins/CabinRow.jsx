@@ -68,7 +68,7 @@ const CabinRow = ({ cabin }) => {
         <Cabin>{name}</Cabin>
         <div>Fits upto {maxCapacity} guests</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount> {discount ? formatCurrency(discount) : "&mdash;"}</Discount>
+        <Discount> {discount ? formatCurrency(discount) : <>&mdash;</>}</Discount>
         <div>
           <Modal>
             <Menus.Menu>

@@ -4,6 +4,7 @@ import Select from "./Select";
 function SortBy({ sortField, sortOptions }) {
   const [searchParams, setSearchPrams] = useSearchParams();
 
+
   const currentSortVal = searchParams.get(sortField) || "";
 
   function handleChange(e) {
@@ -11,7 +12,14 @@ function SortBy({ sortField, sortOptions }) {
     setSearchPrams(searchParams);
   }
 
-  return <Select sortOptions={sortOptions} onChange={handleChange} value={currentSortVal} type="white"/>;
+  return (
+    <Select
+      sortOptions={sortOptions}
+      onChange={handleChange}
+      value={currentSortVal}
+      type="white"
+    />
+  );
 }
 
 export default SortBy;

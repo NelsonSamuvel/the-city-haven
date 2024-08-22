@@ -120,7 +120,6 @@ function List({ id, children }) {
 function Button({ children, icon, onClick }) {
   const { close } = useContext(MenusContext);
 
-  console.log("button");
 
   function handleClick() {
     onClick?.();

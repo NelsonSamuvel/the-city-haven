@@ -27,12 +27,11 @@ export function useBookings() {
 
   const page = Number(searchParams.get("page")) || 1;
 
-  
   const { data: { data: bookings, count } = {}, isLoading } = useQuery({
     queryKey: ["bookings", filter, sortBy, page],
     queryFn: () => getBookingData({ filter, sortBy, page }),
   });
-  
+
   const pageCount = Math.ceil(count / PAGE_SIZE);
   if (page < pageCount) {
     queryClient.prefetchQuery({

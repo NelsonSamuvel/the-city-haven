@@ -8,6 +8,13 @@ import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "../bookings/useBooking";
+import Spinner from "../../ui/Spinner";
+import Checkbox from "../../ui/Checkbox";
+import { useEffect, useState } from "react";
+import { useCheckin } from "./useCheckin";
+import { useSettings } from "../settings/useSettings";
+import { formatCurrency } from "../../utils/helpers";
 
 const Box = styled.div`
   /* Box */
@@ -18,10 +25,22 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
+  const [isPaidCheck, setIsPaidCheck] = useState(false);
+
+  const [checkBreakFast, setCheckBreakFast] = useState(false);
+
   const moveBack = useMoveBack();
 
-  const booking = {};
+  const { booking, isLoading } = useBooking();
+  const { checkin, isCheckingIn } = useCheckin();
+  const { settings: { breakFastPrice } = {}, isLoading: isLoadingSetting } =
+    useSettings();
 
+  useEffect(() => {
+    setIsPaidCheck(booking?.isPaid ?? false);
+  }, [booking]);
+
+  if (isLoading || isLoadingSetting) return <Spinner />;
   const {
     id: bookingId,
     guests,
@@ -31,7 +50,22 @@ function CheckinBooking() {
     numNights,
   } = booking;
 
-  function handleCheckin() {}
+  const optionalBreakFast = breakFastPrice + numGuests + numNights;
+  function handleCheckin() {
+    if (!isPaidCheck) return;
+    if (checkBreakFast) {
+      checkin({
+        bookingId,
+        breakFast: {
+          hasBreakfast: true,
+          extrasPrice: optionalBreakFast,
+          totalPrice: totalPrice + optionalBreakFast,
+        },
+      });
+    } else {
+      checkin({ bookingId, breakFast: {} });
+    }
+  }
 
   return (
     <>
@@ -42,8 +76,44 @@ function CheckinBooking() {
 
       <BookingDataBox booking={booking} />
 
+      {!hasBreakfast && (
+        <Box>
+          <Checkbox
+            checked={checkBreakFast}
+            onChange={() => {
+              setCheckBreakFast((check) => !check);
+              setIsPaidCheck(false);
+            }}
+            id="break Fast"
+            disabled={checkBreakFast}
+          >
+            Add a Breakfast(Price ${formatCurrency(optionalBreakFast)})
+          </Checkbox>
+        </Box>
+      )}
+
+      <Box>
+        <Checkbox
+          checked={isPaidCheck}
+          onChange={() => setIsPaidCheck((check) => !check)}
+          id={bookingId}
+          disabled={isPaidCheck || isCheckingIn}
+        >
+          I confirm that {guests.fullName} has paid the amount of
+          {!checkBreakFast
+            ? formatCurrency(totalPrice)
+            : `${formatCurrency(
+                totalPrice + optionalBreakFast
+              )}(${formatCurrency(totalPrice)} + ${formatCurrency(
+                optionalBreakFast
+              )} )`}
+        </Checkbox>
+      </Box>
+
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
+        <Button onClick={handleCheckin} disabled={!isPaidCheck || isCheckingIn}>
+          Check in booking #{bookingId}
+        </Button>
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>

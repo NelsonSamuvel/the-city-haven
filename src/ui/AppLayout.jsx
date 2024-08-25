@@ -7,7 +7,6 @@ import styled from "styled-components";
 const Main = styled.main`
   background-color: var(--color-grey-100);
   padding: 2.4rem 3.2rem;
-  height: 100vh;
 `;
 
 const GridContainer = styled.div`

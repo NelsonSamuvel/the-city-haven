@@ -12,11 +12,21 @@ const Row = styled.div`
       align-items: center;
     `}
 
+
   ${(props) =>
     props.type === "vertical" &&
     css`
       flex-direction: column;
       gap: 1rem;
+    `}
+
+    ${(props) =>
+    props.type === "flexEnd" &&
+    css`
+      justify-content: flex-end;
+      padding-block: 4px;
+      padding-inline: 12px;
+      align-items: center;
     `}
 `;
 Row.defaultProps = {

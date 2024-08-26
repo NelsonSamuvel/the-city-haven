@@ -1,5 +1,5 @@
 import { PAGE_SIZE } from "../utils/constants";
-import { getToday } from "../utils/helpers";
+import { differenceDays, getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
 export async function getBookingData({ filter, sortBy, page }) {
@@ -49,6 +49,82 @@ export async function getBooking(id) {
   if (error) {
     console.error(error);
     throw new Error("Booking not found");
+  }
+
+  return data;
+}
+
+export async function createBookings({ guestData, bookingData }) {
+  const { data: guest, error: guestError } = await supabase
+    .from("guests")
+    .insert([guestData])
+    .select()
+    .single();
+
+  if (guestError) throw new Error(guestError.message);
+
+  const numNights = differenceDays(bookingData.startDate, bookingData.endDate);
+
+  const startDate = `${bookingData.startDate}T00:00:00`;
+  const endDate = `${bookingData.endDate}T00:00:00`;
+
+  const { data: cabinsPrice } = await supabase
+    .from("cabins")
+    .select("id, regularPrice, discount")
+    .eq("name", bookingData.cabinName)
+    .single();
+
+  const { regularPrice, discount, id: cabinId } = cabinsPrice;
+
+  const cabinPrice = bookingData.numGuests * (regularPrice - discount);
+  console.log(cabinPrice);
+
+  let extrasPrice = 0;
+  if (bookingData.hasBreakfast) {
+    const { data, error: settingsError } = await supabase
+      .from("settings")
+      .select("breakFastPrice")
+      .single();
+    if (settingsError) throw new Error(settingsError.message);
+
+    extrasPrice = data.breakFastPrice;
+  }
+
+  const totalPrice = cabinPrice + extrasPrice;
+
+  const finalBooking = {
+    startDate,
+    endDate,
+    numNights,
+    numGuests: bookingData.numGuests,
+    cabinPrice,
+    extrasPrice,
+    totalPrice,
+    status: bookingData.status,
+    hasBreakfast: bookingData.hasBreakfast,
+    isPaid: bookingData.isPaid,
+    cabinId,
+    guestId: guest.id,
+  };
+
+  const { data: booking, error: bookingError } = await supabase
+    .from("bookings")
+    .insert([finalBooking])
+    .select();
+
+  if (bookingError) throw new Error(bookingError.message);
+
+  return booking[0];
+}
+
+export async function guestBasedCabins(guestsCount) {
+  const { data, error } = await supabase
+    .from("cabins")
+    .select("name, maxCapacity")
+    .gte("maxCapacity", guestsCount);
+
+  if (error) {
+    throw new Error(error.message);
   }
 
   return data;

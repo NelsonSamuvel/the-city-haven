@@ -1,9 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useLocalStorageState } from "../hooks/useLocalStorageState";
 
 const DarkModeContext = createContext();
 
 function DarkModeProvider({ children }) {
-  const [isDark, setIsdark] = useState(false);
+  const [isDark, setIsdark] = useLocalStorageState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+    "mode"
+  );
 
   function setDark() {
     setIsdark((dark) => !dark);

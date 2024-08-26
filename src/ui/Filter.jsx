@@ -39,7 +39,7 @@ function Filter({ filterField, filterOptions }) {
   const [searchParams, setSearchPrams] = useSearchParams();
 
   const currentFilter =
-    searchParams.get(filterField) || filterOptions.at(0).value;
+    searchParams.get(filterField) || filterOptions?.at(0).value;
 
   console.log(currentFilter);
 
@@ -51,7 +51,7 @@ function Filter({ filterField, filterOptions }) {
 
   return (
     <StyledFilter>
-      {filterOptions.map((option) => (
+      {filterOptions?.map((option) => (
         <FilterButton
           key={option.value}
           onClick={() => handleClick(option.value)}

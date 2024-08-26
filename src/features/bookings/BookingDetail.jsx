@@ -7,6 +7,7 @@ import Tag from "../../ui/Tag";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
+import Empty from "../../ui/Empty";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
 import { useBooking } from "./useBooking";
@@ -37,6 +38,9 @@ function BookingDetail() {
   const { isDeleting, deleteBookings } = useDeleteBookings();
 
   if (isLoading) return <Spinner />;
+
+  if (!booking) return <Empty resourceName="booking" />;
+
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",

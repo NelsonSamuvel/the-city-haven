@@ -7,7 +7,7 @@ const Input = styled.input`
   border-radius: var(--border-radius-tiny);
   font-size: 18px;
   margin: 12px 8px;
-`
-
+  color: black;
+`;
 
 export default Input;

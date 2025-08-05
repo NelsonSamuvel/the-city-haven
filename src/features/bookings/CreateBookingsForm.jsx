@@ -20,18 +20,7 @@ export default function CreateBookingsForm({onCloseModal}) {
 
   const queryClient = useQueryClient();
 
-  const [cabinNames, setCabinNames] = useState(() =>
-    cabins?.reduce((acc, cur) => {
-      [
-        ...acc,
-        {
-          name: cur.name,
-          maxCapacity: cur.maxCapacity,
-        },
-      ];
-      return acc;
-    }, [])
-  );
+  const [cabinNames, setCabinNames] = useState([]);
 
   const {
     register,
@@ -40,7 +29,8 @@ export default function CreateBookingsForm({onCloseModal}) {
     formState: { errors },
     getValues,
     watch,
-    reset
+    reset,
+    setValue
   } = useForm({
     defaultValues: {
       payment: false,
@@ -61,9 +51,14 @@ export default function CreateBookingsForm({onCloseModal}) {
       const numGuest = Number(numGuests);
       const data = await guestBasedCabins(numGuest);
       setCabinNames(data);
+      
+      // Set the first available cabin as the selected option
+      if (data && data.length > 0) {
+        setValue("cabinName", data[0].name);
+      }
     }
     getCabinsName();
-  }, [numGuests]);
+  }, [numGuests, setValue]);
 
   function onSubmit({
     fullName,
@@ -100,7 +95,7 @@ export default function CreateBookingsForm({onCloseModal}) {
       onSuccess : ()=>{
         reset();
         queryClient.invalidateQueries({queryKey: ["bookings"]});
-        onCloseModal();
+        onCloseModal(); 
       }
     });
   }
@@ -169,17 +164,17 @@ export default function CreateBookingsForm({onCloseModal}) {
             ]}
           />
         </FormRow>
-        <FormRow label="Available Cabins" type="customColumn">
-          <Dropdown
-            id="cabinName"
-            disabled={isCreating}
-            register={register}
-            options={cabinNames?.map((cabin) => ({
-              label: `${cabin.name} (MaxGuests-${cabin.maxCapacity})`,
-              value: cabin.name,
-            }))}
-          />
-        </FormRow>
+                 <FormRow label="Available Cabins" type="customColumn">
+           <Dropdown
+             id="cabinName"
+             disabled={isCreating}
+             register={register}
+             options={cabinNames?.map((cabin) => ({
+               label: `${cabin.name} (Max: ${cabin.maxCapacity} guests)`,
+               value: cabin.name,
+             }))}
+           />
+         </FormRow>
       </FormRow>
       <FormRow type="customRow">
         <FormRow

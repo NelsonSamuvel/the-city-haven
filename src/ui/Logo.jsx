@@ -8,12 +8,13 @@ const StyledLogo = styled.div`
 const Img = styled.img`
   height: 9.6rem;
   width: auto;
+  border-radius: 50%;
 `;
 
 function Logo() {
   const { isDark } = useDarkMode();
 
-  const src = isDark ? "/logo-dark.png" : "/logo-light.png";
+  const src = isDark ? "/hotel-logo-dark.jpg" : "/hotel-logo-light.jpg";
 
   return (
     <StyledLogo>

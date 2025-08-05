@@ -30,7 +30,7 @@ function Checkbox({
   onChange,
   disabled = false,
   id,
-  register = {},
+  register = null,
   children,
 }) {
   return (
@@ -41,7 +41,7 @@ function Checkbox({
         checked={checked}
         onChange={onChange}
         disabled={disabled}
-        {...register(id)}
+        {...register?.(id)}
       />
       <label htmlFor={!disabled ? id : ""}>{children}</label>
     </StyledCheckbox>

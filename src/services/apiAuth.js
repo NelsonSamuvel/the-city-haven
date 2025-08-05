@@ -49,6 +49,22 @@ export async function logout() {
   if (error) throw new Error("failed to log out");
 }
 
+export async function createUser({ email, password, display_name }) {
+  const { data, error } = await supabase.auth.createUser({
+    email,
+    password,
+    user_metadata: {
+      display_name,
+    },
+    email_confirm: true, // Optional: Skip email verification
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
+
 export async function updateUser({ fullName, avatar, password }) {
   let updateUserData;
   if (password) updateUserData = { password };

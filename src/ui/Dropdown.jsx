@@ -14,7 +14,7 @@ export default function Dropdown({ options, register, id }) {
   return (
     <StyledDropdown name={id} {...register(id)}>
       {options?.map((option) => (
-        <option value={option.value} key={option.label}>
+        <option value={option.value} key={option.value}>
           {option.label}
         </option>
       ))}

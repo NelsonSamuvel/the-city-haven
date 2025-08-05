@@ -12,11 +12,13 @@ import { createBookings, guestBasedCabins } from "../../services/apiBookings";
 import { differenceInDays } from "date-fns";
 import { getCountryFlag } from "../../utils/helpers";
 import { useCreateBookings } from "./useCreateBookings";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CreateBookingsForm({onCloseModal}) {
   const { cabins, isLoading: isLoadingCabins } = useCabins();
-
   const { createBooking, isCreating } = useCreateBookings();
+
+  const queryClient = useQueryClient();
 
   const [cabinNames, setCabinNames] = useState(() =>
     cabins?.reduce((acc, cur) => {
@@ -97,6 +99,7 @@ export default function CreateBookingsForm({onCloseModal}) {
     createBooking({ guestData, bookingData },{
       onSuccess : ()=>{
         reset();
+        queryClient.invalidateQueries({queryKey: ["bookings"]});
         onCloseModal();
       }
     });

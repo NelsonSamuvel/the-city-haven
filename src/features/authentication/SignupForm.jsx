@@ -4,11 +4,13 @@ import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import { useSignup } from "./useSignup";
+import { useCreateUser } from "./useUser";
 
 // Email regex: /\S+@\S+\.\S+/
 
 function SignupForm() {
   const { signUp, isSigningIn } = useSignup();
+  const {createNewUser,isPending:isCreating} = useCreateUser();
 
   const {
     register,
@@ -18,15 +20,9 @@ function SignupForm() {
     reset,
   } = useForm();
 
-  function onSubmit({ fullName, password, email }) {
-    console.log(fullName, password, email);
-
-    signUp(
-      { fullName, password, email },
-      {
-        onSettled: () => reset(),
-      }
-    );
+   function onSubmit({ fullName, password, email }) {
+     signUp({ password, email,  fullName });
+    reset();
   }
 
   return (
